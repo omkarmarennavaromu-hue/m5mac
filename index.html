@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>MacBook M5 | Future of Intelligence</title>
+    <!-- Google Fonts + Tailwind + GSAP + Three.js CDNs -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        /* custom overrides & extra premium touches */
+        body {
+            font-family: 'Inter', 'Poppins', sans-serif;
+            background: #05050b;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        /* Hide scrollbar but keep functionality (optional) */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #b87c4f;
+            border-radius: 20px;
+        }
+        .glow-text {
+            text-shadow: 0 0 12px rgba(245, 158, 76, 0.5);
+        }
+        .card-glow {
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .card-glow:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 40px -12px rgba(245, 158, 76, 0.25), 0 0 0 1px rgba(245, 158, 76, 0.2);
+        }
+        .gradient-border {
+            background: linear-gradient(135deg, rgba(245,158,76,0.2), rgba(180,83,9,0.05));
+            border-radius: 2rem;
+        }
+        .btn-glow {
+            transition: all 0.3s ease;
+            box-shadow: 0 0 8px rgba(245, 158, 76, 0.4);
+        }
+        .btn-glow:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 22px rgba(245, 158, 76, 0.8);
+        }
+        .parallax-bg {
+            will-change: transform;
+        }
+        canvas {
+            display: block;
+            outline: none;
+        }
+        /* video background overlay subtle */
+        .video-overlay {
+            background: radial-gradient(circle at center, rgba(5,5,11,0.2) 0%, rgba(5,5,11,0.7) 100%);
+        }
+        .spec-card {
+            backdrop-filter: blur(8px);
+            background: rgba(20, 20, 30, 0.6);
+            transition: all 0.3s;
+        }
+        .spec-card:hover {
+            background: rgba(30, 30, 45, 0.8);
+            border-color: #f59e0b;
+            box-shadow: 0 0 15px rgba(245,158,76,0.3);
+        }
+        .price-toggle {
+            transition: all 0.2s;
+        }
+        .price-active {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            box-shadow: 0 0 12px #f59e0b;
+        }
+        footer a, footer span {
+            letter-spacing: 0.02em;
+        }
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(40px);}
+            100% { opacity: 1; transform: translateY(0);}
+        }
+        .animate-fade-up {
+            animation: fadeUp 1s ease forwards;
+        }
+    </style>
+</head>
+<body class="bg-[#05050b] text-white selection:bg-amber-500/30">
+
+    <!-- HERO SECTION with 3D Model + Parallax & cinematic entrance -->
+    <section class="relative w-full h-screen overflow-hidden" id="hero">
+        <!-- 3D Canvas container -->
+        <div id="canvas-container" class="absolute inset-0 z-0"></div>
+        
+        <!-- overlay gradient for readability -->
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#05050b]/20 to-[#05050b]/80 z-10 pointer-events-none"></div>
+        
+        <!-- Hero content -->
+        <div class="relative z-20 flex flex-col items-center justify-center h-full text-center px-6 md:px-12">
+            <div class="hero-content opacity-0" id="hero-text">
+                <span class="text-sm md:text-base uppercase tracking-[0.3em] text-amber-400 font-light mb-4 block">Reinvent Intelligence</span>
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-amber-100 to-amber-300">MacBook M5</h1>
+                <p class="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto mt-6 font-light">M5 Ultra chip. 36-hour battery. AI-driven performance.</p>
+                <div class="flex flex-wrap gap-6 justify-center mt-10">
+                    <button class="btn-glow px-8 py-4 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white font-semibold text-lg transition-all hover:scale-105">Buy Now →</button>
+                    <button class="btn-glow px-8 py-4 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 text-white font-semibold text-lg transition-all hover:bg-white/20">Learn More</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- scroll hint -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce cursor-pointer" id="scrollHint">
+            <div class="w-6 h-10 border-2 border-amber-400/60 rounded-full flex justify-center"><div class="w-1 h-2 bg-amber-400 rounded-full mt-2 animate-ping"></div></div>
+        </div>
+    </section>
+
+    <!-- Features Section 1: elegant cards + scroll triggered animations -->
+    <section class="relative py-28 px-6 md:px-12 max-w-7xl mx-auto" id="features">
+        <div class="text-center mb-20 opacity-0" id="feat-title">
+            <span class="text-amber-400 uppercase tracking-wider text-sm font-semibold">Groundbreaking</span>
+            <h2 class="text-4xl md:text-5xl font-bold mt-2">Features that redefine power</h2>
+            <div class="w-24 h-1 bg-gradient-to-r from-amber-500 to-orange-500 mx-auto mt-4 rounded-full"></div>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Card 1 -->
+            <div class="card-glow rounded-2xl p-8 bg-gradient-to-br from-gray-900/80 to-gray-800/40 backdrop-blur-sm border border-gray-700/50 transition-all opacity-0 translate-y-10 feat-card">
+                <div class="w-14 h-14 rounded-full bg-amber-500/20 flex items-center justify-center mb-6"><span class="text-3xl">🧠</span></div>
+                <h3 class="text-2xl font-semibold">M5 Neural Engine</h3>
+                <p class="text-gray-300 mt-3 leading-relaxed">38-core AI coprocessor, real-time translation & predictive workflows. Up to 22x faster machine learning.</p>
+                <div class="mt-5 text-amber-400 text-sm font-medium">Learn more →</div>
+            </div>
+            <!-- Card 2 -->
+            <div class="card-glow rounded-2xl p-8 bg-gradient-to-br from-gray-900/80 to-gray-800/40 backdrop-blur-sm border border-gray-700/50 transition-all opacity-0 translate-y-10 feat-card">
+                <div class="w-14 h-14 rounded-full bg-amber-500/20 flex items-center justify-center mb-6"><span class="text-3xl">🔋</span></div>
+                <h3 class="text-2xl font-semibold">Quantum Battery</h3>
+                <p class="text-gray-300 mt-3 leading-relaxed">Up to 36 hours video playback. Fast charge 0-50% in 15 minutes with MagSafe 4.</p>
+                <div class="mt-5 text-amber-400 text-sm font-medium">Learn more →</div>
+            </div>
+            <!-- Card 3 -->
+            <div class="card-glow rounded-2xl p-8 bg-gradient-to-br from-gray-900/80 to-gray-800/40 backdrop-blur-sm border border-gray-700/50 transition-all opacity-0 translate-y-10 feat-card">
+                <div class="w-14 h-14 rounded-full bg-amber-500/20 flex items-center justify-center mb-6"><span class="text-3xl">🖥️</span></div>
+                <h3 class="text-2xl font-semibold">Liquid XDR 2.0</h3>
+                <p class="text-gray-300 mt-3 leading-relaxed">16.2-inch, 120Hz ProMotion, 1600 nits peak HDR. Nano-texture glass option.</p>
+                <div class="mt-5 text-amber-400 text-sm font-medium">Learn more →</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video background section (Lottie-like video) with scroll animation -->
+    <section class="relative w-full py-28 my-12 overflow-hidden">
+        <div class="absolute inset-0">
+            <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-40">
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-circuit-board-with-moving-particles-1262-large.mp4" type="video/mp4">
+            </video>
+            <div class="absolute inset-0 bg-gradient-to-r from-purple-900/30 via-transparent to-amber-900/30"></div>
+        </div>
+        <div class="relative max-w-6xl mx-auto px-6 text-center z-10">
+            <div class="opacity-0" id="vid-text">
+                <span class="text-amber-300 tracking-widest text-sm">AI-ENHANCED</span>
+                <h2 class="text-4xl md:text-6xl font-bold mt-3">Performance meets intelligence</h2>
+                <p class="text-gray-200 text-xl max-w-3xl mx-auto mt-4">M5 Ultra with 16-core CPU and 40-core GPU. Every workflow, seamless.</p>
+                <button class="mt-10 px-8 py-3 rounded-full border border-amber-400 text-amber-300 hover:bg-amber-400/20 transition-all">Watch the film →</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Additional Feature: gradient & gold accent -->
+    <section class="py-24 px-6 max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div class="order-2 md:order-1 opacity-0" id="feature-left">
+                <div class="inline-block px-4 py-1 rounded-full bg-amber-500/10 text-amber-400 text-sm font-medium mb-4">Next‑gen connectivity</div>
+                <h2 class="text-3xl md:text-4xl font-bold leading-tight">Wi-Fi 7 & Thunderbolt 5.<br>Boundless creativity.</h2>
+                <p class="text-gray-300 text-lg mt-6">Up to 5.8Gbps wireless speeds, triple 8K display support, and ultra-low latency. Perfect for creators and coders.</p>
+                <div class="flex gap-5 mt-8">
+                    <div><span class="text-amber-400 text-3xl font-bold">2x</span><span class="block text-sm">Faster transfer</span></div>
+                    <div><span class="text-amber-400 text-3xl font-bold">3x</span><span class="block text-sm">GPU uplift</span></div>
+                </div>
+            </div>
+            <div class="order-1 md:order-2 flex justify-center">
+                <div class="w-full max-w-md h-80 rounded-2xl gradient-border flex items-center justify-center bg-black/30 backdrop-blur-sm border border-amber-500/30">
+                    <div class="text-center p-6">
+                        <div class="text-7xl mb-2">⚡</div>
+                        <p class="text-amber-300 font-mono">M5 Ultra: 150B transistors</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SPECS / CONFIGURATIONS SECTION with Price Toggle & animated highlight -->
+    <section class="py-24 px-6 bg-gradient-to-b from-[#07070f] to-[#020205]" id="specs">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-14">
+                <h2 class="text-4xl md:text-5xl font-bold">Configurations</h2>
+                <p class="text-gray-400 mt-2">Choose your power. Upgrade anytime.</p>
+            </div>
+            <!-- Price Toggle (animated) -->
+            <div class="flex justify-center mb-12">
+                <div class="bg-white/5 rounded-full p-1 flex gap-2 backdrop-blur-sm border border-white/10">
+                    <button id="price-std" class="price-toggle px-8 py-3 rounded-full font-medium transition-all price-active">Standard</button>
+                    <button id="price-pro" class="price-toggle px-8 py-3 rounded-full font-medium transition-all text-gray-300 hover:text-white">Pro Max</button>
+                </div>
+            </div>
+            
+            <!-- Dynamic pricing display -->
+            <div class="text-center mb-10 transition-all duration-500" id="priceDisplay">
+                <span class="text-5xl font-bold bg-gradient-to-r from-white to-amber-200 bg-clip-text text-transparent">$2,399</span>
+                <span class="text-gray-400 text-xl ml-2">or $99.91/mo*</span>
+            </div>
+            
+            <!-- Specs Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="spec-card rounded-2xl p-6 border border-gray-800 text-center transition-all">
+                    <div class="text-3xl mb-3">💾</div>
+                    <h3 class="text-xl font-semibold">Memory</h3>
+                    <p class="text-2xl font-bold text-amber-400 mt-2" id="ram-spec">32GB Unified</p>
+                    <p class="text-gray-400 text-sm">Up to 128GB configurable</p>
+                </div>
+                <div class="spec-card rounded-2xl p-6 border border-gray-800 text-center transition-all">
+                    <div class="text-3xl mb-3">⚙️</div>
+                    <h3 class="text-xl font-semibold">Storage</h3>
+                    <p class="text-2xl font-bold text-amber-400 mt-2" id="storage-spec">1TB SSD</p>
+                    <p class="text-gray-400 text-sm">Up to 8TB, 7.4 GB/s read</p>
+                </div>
+                <div class="spec-card rounded-2xl p-6 border border-gray-800 text-center transition-all">
+                    <div class="text-3xl mb-3">🎨</div>
+                    <h3 class="text-xl font-semibold">Display</h3>
+                    <p class="text-2xl font-bold text-amber-400 mt-2">Liquid XDR</p>
+                    <p class="text-gray-400 text-sm">ProMotion 120Hz, XDR 1600 nits</p>
+                </div>
+            </div>
+            <div class="text-center mt-12 text-sm text-gray-500">* 0% APR financing available. Trade‑in values apply.</div>
+        </div>
+    </section>
+
+    <!-- FOOTER minimal elegant + branding -->
+    <footer class="relative border-t border-white/10 py-12 px-6 mt-16 overflow-hidden">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex gap-6 text-sm text-gray-400">
+                <a href="#" class="hover:text-amber-400 transition">Privacy Policy</a>
+                <a href="#" class="hover:text-amber-400 transition">Terms of Use</a>
+                <a href="#" class="hover:text-amber-400 transition">Sales Policy</a>
+            </div>
+            <div class="text-center">
+                <p class="text-gray-400 text-sm">© 2025 Apple Inc. All rights reserved. MacBook M5 is a trademark.</p>
+                <div class="mt-3 text-lg font-light tracking-wide">
+                    <span class="bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent glow-text">Powered by Omkar</span>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500/20 transition cursor-pointer">🔗</div>
+                <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500/20 transition cursor-pointer">📱</div>
+            </div>
+        </div>
+        <div class="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500 to-transparent"></div>
+    </footer>
+
+    <script>
+        // Initialize GSAP ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // --- 3D MacBook M5 Model using Three.js (geometric abstract but premium look)
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x05050b);
+        scene.fog = new THREE.FogExp2(0x05050b, 0.008);
+        
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.set(0, 1.5, 5);
+        camera.lookAt(0, 0, 0);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.shadowMap.enabled = true;
+        container.appendChild(renderer.domElement);
+        
+        // Lights
+        const ambientLight = new THREE.AmbientLight(0x404060);
+        scene.add(ambientLight);
+        const mainLight = new THREE.DirectionalLight(0xffcc88, 1);
+        mainLight.position.set(2, 5, 3);
+        mainLight.castShadow = true;
+        scene.add(mainLight);
+        const fillLight = new THREE.PointLight(0x4433aa, 0.4);
+        fillLight.position.set(-1, 2, 2);
+        scene.add(fillLight);
+        const rimLight = new THREE.PointLight(0xffaa66, 0.6);
+        rimLight.position.set(1, 1, -2);
+        scene.add(rimLight);
+        const backLight = new THREE.PointLight(0xff8833, 0.5);
+        backLight.position.set(0, 1, -3);
+        scene.add(backLight);
+        
+        // Create MacBook style group (metal body + screen)
+        const laptop = new THREE.Group();
+        
+        // Base Body
+        const bodyGeo = new THREE.BoxGeometry(2.4, 0.12, 1.8);
+        const bodyMat = new THREE.MeshStandardMaterial({ color: 0x3a3a44, metalness: 0.85, roughness: 0.25, emissive: 0x111111 });
+        const body = new THREE.Mesh(bodyGeo, bodyMat);
+        body.position.y = -0.1;
+        body.castShadow = true;
+        body.receiveShadow = true;
+        laptop.add(body);
+        
+        // Keyboard area (subtle)
+        const keyGeo = new THREE.BoxGeometry(2.1, 0.03, 1.3);
+        const keyMat = new THREE.MeshStandardMaterial({ color: 0x222228, metalness: 0.3, roughness: 0.6 });
+        const keyboard = new THREE.Mesh(keyGeo, keyMat);
+        keyboard.position.set(0, -0.03, 0.1);
+        laptop.add(keyboard);
+        
+        // Screen Panel
+        const screenGeo = new THREE.BoxGeometry(2.2, 0.05, 1.4);
+        const screenMat = new THREE.MeshStandardMaterial({ color: 0x111118, metalness: 0.9, roughness: 0.2, emissive: 0x221100 });
+        const screenPanel = new THREE.Mesh(screenGeo, screenMat);
+        screenPanel.position.set(0, 0.55, -0.25);
+        screenPanel.castShadow = true;
+        laptop.add(screenPanel);
+        
+        // Glass display (glowing)
+        const displayGeo = new THREE.BoxGeometry(1.9, 0.02, 1.1);
+        const displayMat = new THREE.MeshStandardMaterial({ color: 0x2a2a33, emissive: 0x442200, emissiveIntensity: 0.5 });
+        const displayGlass = new THREE.Mesh(displayGeo, displayMat);
+        displayGlass.position.set(0, 0.55, -0.1);
+        laptop.add(displayGlass);
+        
+        // Logo accent
+        const appleLogoGeo = new THREE.SphereGeometry(0.08, 16, 16);
+        const logoMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xf59e0b, emissiveIntensity: 0.4 });
+        const logo = new THREE.Mesh(appleLogoGeo, logoMat);
+        logo.position.set(0.85, 0.58, -0.18);
+        laptop.add(logo);
+        
+        scene.add(laptop);
+        
+        // Particles for premium effect
+        const particleCount = 1200;
+        const particlesGeo = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount; i++) {
+            positions[i*3] = (Math.random() - 0.5) * 40;
+            positions[i*3+1] = (Math.random() - 0.5) * 20;
+            positions[i*3+2] = (Math.random() - 0.5) * 25 - 15;
+        }
+        particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const particleMat = new THREE.PointsMaterial({ color: 0xf59e0b, size: 0.03, transparent: true, opacity: 0.5 });
+        const particles = new THREE.Points(particlesGeo, particleMat);
+        scene.add(particles);
+        
+        // Rotation & interactive mouse control
+        let mouseX = 0, mouseY = 0;
+        let targetRotationX = 0, targetRotationY = 0;
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = (event.clientY / window.innerHeight) * 2 - 1;
+            targetRotationY = mouseX * 0.8;
+            targetRotationX = mouseY * 0.3;
+        });
+        
+        let time = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.008;
+            // smooth follow for laptop rotation
+            laptop.rotation.x += (targetRotationX - laptop.rotation.x) * 0.08;
+            laptop.rotation.y += (targetRotationY - laptop.rotation.y) * 0.08;
+            // particle gentle drift
+            particles.rotation.y = time * 0.05;
+            particles.rotation.x = Math.sin(time * 0.1) * 0.1;
+            // auto slight bounce on hero? no
+            camera.lookAt(0, 0.2, 0);
+            renderer.render(scene, camera);
+        }
+        animate();
+        
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            const w = container.clientWidth;
+            const h = container.clientHeight;
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h);
+        }
+        onWindowResize();
+        
+        // --- ScrollTrigger animations & entrance cinematic
+        const tl = gsap.timeline();
+        tl.fromTo("#hero-text", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 1.2, ease: "power3.out" })
+          .fromTo(".hero-content span", { opacity: 0, letterSpacing: "10px" }, { opacity: 1, letterSpacing: "0.3em", duration: 0.8 }, "-=0.5");
+        
+        // Parallax scrolling effect for 3D scene camera shift
+        ScrollTrigger.create({
+            trigger: "body",
+            start: "top top",
+            end: "bottom bottom",
+            onUpdate: (self) => {
+                const scrollProgress = self.progress;
+                camera.position.z = 5 - scrollProgress * 1.2;
+                camera.position.y = 1.5 - scrollProgress * 0.6;
+                camera.lookAt(0, 0.2, 0);
+                // particles movement
+                particles.rotation.z = scrollProgress * 1.5;
+            }
+        });
+        
+        // Feature cards appear on scroll
+        gsap.utils.toArray(".feat-card").forEach((card, i) => {
+            gsap.to(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 85%",
+                    toggleActions: "play none none reverse"
+                },
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                delay: i * 0.15,
+                ease: "back.out(0.6)"
+            });
+        });
+        
+        gsap.to("#feat-title", {
+            scrollTrigger: { trigger: "#features", start: "top 80%" },
+            opacity: 1,
+            y: 0,
+            duration: 0.9
+        });
+        
+        gsap.to("#vid-text", {
+            scrollTrigger: { trigger: "#vid-text", start: "top 80%" },
+            opacity: 1,
+            y: 0,
+            duration: 0.9
+        });
+        
+        gsap.to("#feature-left", {
+            scrollTrigger: { trigger: "#feature-left", start: "top 80%" },
+            opacity: 1,
+            x: 0,
+            duration: 1
+        });
+        
+        // --- Price Toggle simulation (Standard / Pro Max)
+        const stdBtn = document.getElementById('price-std');
+        const proBtn = document.getElementById('price-pro');
+        const priceDisplaySpan = document.querySelector('#priceDisplay span:first-child');
+        const ramElem = document.getElementById('ram-spec');
+        const storageElem = document.getElementById('storage-spec');
+        
+        function setPrice(version) {
+            if(version === 'std') {
+                priceDisplaySpan.innerText = '$2,399';
+                ramElem.innerText = '32GB Unified';
+                storageElem.innerText = '1TB SSD';
+                stdBtn.classList.add('price-active');
+                proBtn.classList.remove('price-active');
+                proBtn.classList.add('text-gray-300');
+                stdBtn.classList.remove('text-gray-300');
+            } else {
+                priceDisplaySpan.innerText = '$3,899';
+                ramElem.innerText = '64GB Unified';
+                storageElem.innerText = '4TB SSD';
+                proBtn.classList.add('price-active');
+                stdBtn.classList.remove('price-active');
+                stdBtn.classList.add('text-gray-300');
+                proBtn.classList.remove('text-gray-300');
+            }
+            gsap.to('#priceDisplay', { scale: 1.05, duration: 0.2, yoyo: true, repeat: 1 });
+        }
+        
+        stdBtn.addEventListener('click', () => setPrice('std'));
+        proBtn.addEventListener('click', () => setPrice('pro'));
+        
+        // smooth scrolling for hint
+        document.getElementById('scrollHint')?.addEventListener('click', () => {
+            window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+        });
+        
+        // initial trigger for any element not animated yet
+        gsap.set([".feat-card", "#feat-title", "#vid-text", "#feature-left"], { opacity: 0, y: 40 });
+        gsap.set("#feature-left", { x: -30 });
+        gsap.set("#vid-text", { y: 40 });
+        // final spec hover already via css
+    </script>
+</body>
+</html>
